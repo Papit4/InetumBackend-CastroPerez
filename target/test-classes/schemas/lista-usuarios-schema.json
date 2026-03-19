@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "properties": {
+    "quantidade": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "usuarios": {
+      "type": "array",
+      "items": {
+        "$ref": "usuario-schema.json"
+      }
+    }
+  },
+  "required": ["quantidade", "usuarios"]
+}
