@@ -1,8 +1,8 @@
-package usuarios;
+package runners;
 
 import com.intuit.karate.junit5.Karate;
 
-class UsuariosRunner {
+class UsuariosTest {
 
     @Karate.Test
     Karate testUsuarios() {
@@ -27,5 +27,10 @@ class UsuariosRunner {
     @Karate.Test
     Karate testActualizarUsuario() {
         return Karate.run("classpath:usuarios/actualizar-usuario.feature").relativeTo(getClass());
+    }
+
+    @Karate.Test
+    Karate testEliminarUsuario() {
+        return Karate.run("classpath:usuarios/eliminar-usuario.feature").relativeTo(getClass());
     }
 }

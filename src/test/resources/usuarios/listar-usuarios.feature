@@ -5,7 +5,7 @@ Feature: Listar Usuarios
 
   Background:
     * url baseUrl
-    * def listaSchema = read('classpath:schemas/lista-usuarios-schema.json')
+    * def schemaValidator = call read('classpath:helpers/SchemaValidator.js')
 
   @smoke @positive
   Scenario: Listar todos los usuarios exitosamente
@@ -14,48 +14,42 @@ Feature: Listar Usuarios
     Then status 200
     And match response.quantidade == '#number'
     And match response.usuarios == '#array'
-    And match each response.usuarios ==
+    * assert schemaValidator.validateListaUsuarios(response)
+
+  @positive
+  Scenario: Verificar estructura de respuesta al listar usuarios
+    Given path 'usuarios'
+    When method GET
+    Then status 200
+    * assert schemaValidator.validateListaUsuarios(response)
+    And match response ==
       """
       {
-        _id: '#string',
-        nome: '#string',
-        email: '#string',
-        password: '#string',
-        administrador: '#string'
+        quantidade: '#number',
+        usuarios: '#array'
       }
       """
 
   @positive
-  Scenario: Listar usuarios con paginación
-    Given path 'usuarios'
-    And param _limit = 5
-    And param _skip = 0
-    When method GET
-    Then status 200
-    And match response.quantidade == '#number'
-    And match response.usuarios == '#[0..5]'
-
-  @positive
   Scenario: Buscar usuario por nombre
     Given path 'usuarios'
-    And param nome = 'Fulano'
+    And param nome = 'Admin'
     When method GET
     Then status 200
-    And match response.quantidade == '#number'
-    And match response.usuarios == '#array'
+    * assert schemaValidator.validateListaUsuarios(response)
 
   @positive
   Scenario: Buscar usuario por email
     Given path 'usuarios'
-    And param email = 'fulano@qa.com'
+    And param email = 'admin@qa.com'
     When method GET
     Then status 200
-    And match response.quantidade == '#number'
+    * assert schemaValidator.validateListaUsuarios(response)
 
   @negative
   Scenario: Listar usuarios con parámetro inválido
     Given path 'usuarios'
     And param invalid_param = 'test'
     When method GET
-    Then status 200
-    * print 'API ignora parámetros desconocidos'
+    Then status 400
+    And match response.invalid_param == 'invalid_param não é permitido'

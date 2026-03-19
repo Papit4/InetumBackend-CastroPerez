@@ -24,6 +24,7 @@ Feature: Actualizar Usuario
     When method PUT
     Then status 200
     And match response.message == 'Registro alterado com sucesso'
+    And match response == { message: '#string' }
 
     # Verificar actualización
     Given path 'usuarios', userId
@@ -60,6 +61,7 @@ Feature: Actualizar Usuario
     And request updateData
     When method PUT
     Then status 200
+    And match response == { message: '#string' }
 
     # Cleanup
     Given path 'usuarios', userId
@@ -73,7 +75,7 @@ Feature: Actualizar Usuario
     And request userData
     When method PUT
     Then status 201
-    * print 'API crea un nuevo usuario si el ID no existe'
+    And match response == { message: '#string', _id: '#string' }
 
     # Cleanup del usuario creado
     * def newUserId = response._id
@@ -113,6 +115,7 @@ Feature: Actualizar Usuario
     When method PUT
     Then status 400
     And match response.message == 'Este email já está sendo usado'
+    And match response == { message: '#string' }
 
     # Cleanup
     Given path 'usuarios', userId1
@@ -144,6 +147,7 @@ Feature: Actualizar Usuario
     When method PUT
     Then status 400
     And match response.nome == 'nome é obrigatório'
+    And match response == { nome: '#string' }
 
     # Cleanup
     Given path 'usuarios', userId

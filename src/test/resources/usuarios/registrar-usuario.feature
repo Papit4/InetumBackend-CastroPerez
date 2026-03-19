@@ -18,8 +18,15 @@ Feature: Registrar Usuario
     And match response.message == 'Cadastro realizado com sucesso'
     And match response._id == '#string'
     And match response._id == '#notnull'
+    And match response ==
+      """
+      {
+        message: '#string',
+        _id: '#string'
+      }
+      """
 
-    # Cleanup - Eliminar usuario creado
+    # Cleanup
     * def userId = response._id
     Given path 'usuarios', userId
     When method DELETE
@@ -33,6 +40,7 @@ Feature: Registrar Usuario
     When method POST
     Then status 201
     And match response.message == 'Cadastro realizado com sucesso'
+    And match response == { message: '#string', _id: '#string' }
 
     # Cleanup
     * def userId = response._id
@@ -56,6 +64,7 @@ Feature: Registrar Usuario
     When method POST
     Then status 400
     And match response.message == 'Este email já está sendo usado'
+    And match response == { message: '#string' }
 
     # Cleanup
     Given path 'usuarios', userId
@@ -77,6 +86,7 @@ Feature: Registrar Usuario
     When method POST
     Then status 400
     And match response.nome == 'nome é obrigatório'
+    And match response == { nome: '#string' }
 
   @negative
   Scenario: Intentar registrar usuario sin email
@@ -94,6 +104,7 @@ Feature: Registrar Usuario
     When method POST
     Then status 400
     And match response.email == 'email é obrigatório'
+    And match response == { email: '#string' }
 
   @negative
   Scenario: Intentar registrar usuario sin password
@@ -111,6 +122,7 @@ Feature: Registrar Usuario
     When method POST
     Then status 400
     And match response.password == 'password é obrigatório'
+    And match response == { password: '#string' }
 
   @negative
   Scenario: Intentar registrar usuario con email inválido
@@ -129,3 +141,4 @@ Feature: Registrar Usuario
     When method POST
     Then status 400
     And match response.email == 'email deve ser um email válido'
+    And match response == { email: '#string' }
